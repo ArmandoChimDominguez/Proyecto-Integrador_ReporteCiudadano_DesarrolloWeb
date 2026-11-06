@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contacto | Puerto Morelos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { 'caribbean': '#00b4d8' }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #03045e, #023e8a, #0077b6);
+      min-height: 100vh;
+    }
+    .glass-dark { background: rgba(84,86,223,0.75); backdrop-filter: blur(16px); }
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #00b4d8;
+    }
+  </style>
+</head>
+<body>
+  <!-- ==================== BARRA DE NAVEGACIÓN ==================== -->
+  <!-- Navegación fija en la parte superior con glassmorphism -->
+  <nav class="fixed top-0 w-full z-50 p-6 glass-dark py-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <!-- Logo con ícono de olas y nombre del sitio -->
+      <a href="index.html" class="text-2xl font-bold flex items-center gap-2">
+        <i data-lucide="waves" class="text-cyan-400"></i>
+        <span>PUERTO <span class="text-cyan-400">MORELOS</span></span>
+      </a>
+      <!-- Enlaces de navegación (ocultos en móvil) -->
+      <div class="hidden lg:flex space-x-8 text-sm">
+        <a href="index.html" class="hover:text-cyan-400 transition">INICIO</a>
+        <a href="reportar.html" class="hover:text-cyan-400 transition">REPORTAR</a>
+        <a href="mis_reportes.html" class="hover:text-cyan-400 transition">MIS REPORTES</a>
+        <a href="contacto.html" class="text-cyan-400 transition">CONTACTO</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== CONTENEDOR PRINCIPAL DEL FORMULARIO ==================== -->
+  <!-- Main: contiene el formulario de contacto centrado -->
+  <main class="flex justify-center items-center min-h-screen p-6 pt-32">
+    <div class="glass-dark p-8 rounded-3xl w-full max-w-3xl">
+      <!-- Encabezado del formulario con título y enlace de retorno -->
+      <header class="text-center mb-6">
+        <a href="index.html" class="text-cyan-400 text-sm">← Volver</a>
+        <h1 class="text-4xl font-bold text-cyan-400 mt-2">Contacto</h1>
+      </header>
+
+      <!-- ==================== SECCIÓN: FORMULARIO DE CONTACTO ==================== -->
+      <section aria-labelledby="form-contacto">
+        <h2 id="form-contacto" class="sr-only">Formulario de contacto</h2>
+        <form class="space-y-6" action="#" method="POST">
+          
+          <!-- === CAMPO 1: DATOS PERSONALES (Fieldset) === -->
+          <!-- Fieldset para agrupar campos de información personal -->
+          <fieldset class="border border-white/20 rounded-2xl p-5">
+            <legend class="text-cyan-400 font-bold px-3">Datos</legend>
+            <div class="grid md:grid-cols-2 gap-4 mt-4">
+              <!-- Input text: Nombre completo -->
+              <div>
+                <label for="nombre">Nombre *</label>
+                <input id="nombre" type="text" name="nombre" placeholder="Ana Pérez" required
+                       class="w-full p-3 rounded-xl bg-white/10 border border-white/20">
+              </div>
+              <!-- Input email: Correo electrónico -->
+              <div>
+                <label for="email">Correo *</label>
+                <input id="email" type="email" name="email" placeholder="correo@ejemplo.com" required
+                       class="w-full p-3 rounded-xl bg-white/10 border border-white/20">
+              </div>
+              <!-- Input tel: Teléfono de contacto -->
+              <div>
+                <label for="telefono">Teléfono</label>
+                <input id="telefono" type="tel" name="telefono" placeholder="9981234567"
+                       class="w-full p-3 rounded-xl bg-white/10 border border-white/20">
+              </div>
+              <!-- Input number: Edad con validación min/max -->
+              <div>
+                <label for="edad">Edad</label>
+                <input id="edad" type="number" name="edad" min="18" max="100" placeholder="30"
+                       class="w-full p-3 rounded-xl bg-white/10 border border-white/20">
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- === CAMPO 2: DETALLES DE LA CONSULTA (Fieldset) === -->
+          <fieldset class="border border-white/20 rounded-2xl p-5">
+            <legend class="text-cyan-400 font-bold px-3">Consulta</legend>
+            <!-- Select: Tipo de asunto (desplegable) -->
+            <div class="mb-4">
+              <label for="asunto">Asunto *</label>
+              <select id="asunto" name="asunto" required
+                      class="w-full p-3 rounded-xl bg-white/10 border border-white/20">
+                <option>Selecciona...</option>
+                <option>Queja</option>
+                <option>Sugerencia</option>
+                <option>Duda</option>
+              </select>
+            </div>
+            <!-- Radio buttons: ¿Requiere respuesta oficial? -->
+            <div class="mb-4">
+              <span class="block mb-2">¿Requiere respuesta?</span>
+              <div class="flex gap-6">
+                <label><input type="radio" name="respuesta" value="si" class="accent-cyan-400"> Sí</label>
+                <label><input type="radio" name="respuesta" value="no" class="accent-cyan-400"> No</label>
+              </div>
+            </div>
+            <!-- Checkbox: Aceptación de términos -->
+            <div class="mb-4">
+              <label><input type="checkbox" name="terminos" required class="accent-cyan-400"> Acepto términos *</label>
+            </div>
+            <!-- Textarea: Mensaje del usuario -->
+            <div>
+              <label for="mensaje">Mensaje *</label>
+              <textarea id="mensaje" name="mensaje" rows="4" placeholder="Escribe tu mensaje..." required
+                        class="w-full p-3 rounded-xl bg-white/10 border border-white/20"></textarea>
+            </div>
+          </fieldset>
+
+          <!-- === BOTONES: LIMPIAR Y ENVIAR === -->
+          <div class="flex gap-4 justify-end">
+            <!-- Reset: Limpia todos los campos del formulario -->
+            <button type="reset" class="px-6 py-3 rounded-xl bg-white/10 border hover:bg-white/20">Limpiar</button>
+            <!-- Submit: Envía el formulario -->
+            <button type="submit" class="px-8 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 font-bold">Enviar</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- ==================== ENLACE AL PANEL DE ADMINISTRACIÓN ==================== -->
+      <footer class="mt-6 text-center">
+        <a href="admin/login.html" class="text-cyan-400 text-sm">🔐 Panel de Administración</a>
+      </footer>
+    </div>
+  </main>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

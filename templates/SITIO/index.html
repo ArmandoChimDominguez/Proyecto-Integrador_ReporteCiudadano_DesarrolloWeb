@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puerto Morelos | El Corazón de la Riviera Maya</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --caribbean-blue: #00b4d8;
+            --deep-ocean: #0e4886;
+            --sand: #f2e8cf;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--deep-ocean);
+            color: white;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        h1, h2, h3, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-dark {
+            background: rgba(84, 86, 223, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* Animación de Burbujas de Fondo */
+        .bubble {
+            position: fixed;
+            bottom: -100px;
+            background: rgba(0, 180, 216, 0.15);
+            border-radius: 30%;
+            pointer-events: none;
+            animation: rise 10s infinite linear;
+            z-index: 0;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) scale(1) rotate(0deg);
+                opacity: 0;
+            }
+            10% { opacity: 0.6; }
+            90% { opacity: 0.6; }
+            100% {
+                transform: translateY(-110vh) scale(1.2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Animaciones*/
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Efectos de Scroll*/
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 1s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Imagen de Fondo faro */
+        .hero-parallax {
+            background: linear-gradient(to bottom, rgba(3, 4, 94, 0.35), var(--deep-ocean)), 
+                        url('https://en-yucatan.com/photos/riviera-maya/puerto-morelos-hero.jpg');
+            background-attachment: fixed;
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        /* Efectos Hover */
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .card-hover:hover {
+            transform: scale(1.05) translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        /* Estilo para transición del dropdown */
+        .dropdown-menu {
+            opacity: 0;
+            transform: translateY(10px);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .dropdown-menu.show {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+    </style>
+</head>
+<body class="relative min-h-screen">
+
+    <!-- ==================== INICIO: BARRA DE NAVEGACIÓN ==================== -->
+    <!-- Navegación con la estructura -->
+    <nav id="navbar" class="fixed top-0 w-full z-50 p-6 transition-all duration-500">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Logo original -->
+            <a href="#inicio" class="text-2xl font-bold tracking-tighter flex items-center gap-2">
+                <i data-lucide="waves" class="text-cyan-400"></i>
+                <span>PUERTO <span class="text-cyan-400">MORELOS</span></span>
+            </a>
+            
+            <!-- Menú de navegación -->
+            <div class="hidden lg:flex space-x-8 text-sm font-medium items-center">
+                <a href="#inicio" class="hover:text-cyan-400 transition">INICIO</a>
+                
+                <!-- Dropdown: Honorable Ayuntamiento - Botón con submenú desplegable -->
+                <div class="relative inline-block text-left">
+                    <button id="nav-ayuntamiento-btn" class="hover:text-cyan-400 transition flex items-center gap-1 uppercase focus:outline-none">
+                        Honorable Ayuntamiento <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                    </button>
+                    <!-- Sub-menú desplegable con tres opciones: Directorio, Valores, Información General -->
+                    <div id="ayuntamiento-dropdown" class="dropdown-menu absolute left-0 mt-3 w-60 rounded-2xl glass-dark border border-white/10 p-2 z-50 flex flex-col space-y-1">
+                        <button onclick="openAyuntamientoModal('directorio')" class="text-left w-full px-4 py-2.5 hover:bg-cyan-500/20 rounded-xl text-white text-xs font-bold transition flex items-center gap-2">
+                            <i data-lucide="users" class="w-4 h-4 text-cyan-400"></i> Directorio Municipal
+                        </button>
+                        <button onclick="openAyuntamientoModal('valores')" class="text-left w-full px-4 py-2.5 hover:bg-cyan-500/20 rounded-xl text-white text-xs font-bold transition flex items-center gap-2">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-cyan-400"></i> Valores
+                        </button>
+                        <button onclick="openAyuntamientoModal('info')" class="text-left w-full px-4 py-2.5 hover:bg-cyan-500/20 rounded-xl text-white text-xs font-bold transition flex items-center gap-2">
+                            <i data-lucide="info" class="w-4 h-4 text-cyan-400"></i> Información General
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Botón para abrir de Directorio General -->
+                <button onclick="openDirectorioModal()" class="hover:text-cyan-400 transition uppercase focus:outline-none">
+                    Directorio General
+                </button>
+
+                <!-- Botón para abrir e Historia -->
+                <button onclick="openHistoriaModal()" class="hover:text-cyan-400 transition uppercase focus:outline-none">
+                    Historia
+                </button>
+                
+                <!-- Botón de acceso (Acceder para login) -->
+                <a href="/login" class="hover:text-cyan-400 transition flex items-center gap-1 uppercase focus:outline-none">
+                    <i data-lucide="user" class="w-4 h-4"></i> Acceder
+                </a>
+
+                <!-- Botón Visítanos redirige a página de contacto -->
+                <a href="contacto" class="bg-cyan-500 hover:bg-cyan-400 px-5 py-2 rounded-full text-white transition font-bold uppercase">Visítanos</a>
+                
+                <!-- Botón REPORTES redirige a página de reportes ciudadanos -->
+                <a href="reportar.html" class="bg-cyan-500 hover:bg-cyan-400 px-5 py-2 rounded-full text-white transition font-bold uppercase">REPORTES</a>
+            </div>
+
+            <!-- Botón Menú Móvil (solo visible en pantallas pequeñas) -->
+            <div class="flex items-center gap-2 lg:hidden">
+                <a href="/login" class="text-cyan-300 hover:text-cyan-400 p-2">
+                    <i data-lucide="user" class="w-6 h-6"></i>
+                </a>
+                <button id="mobile-menu-btn" class="text-white p-2">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Dropdown Menú Móvil (opciones para dispositivos móviles) -->
+        <div id="mobile-menu-dropdown" class="hidden lg:hidden glass-dark mt-4 rounded-2xl p-4 flex flex-col space-y-4">
+            <a href="#inicio" class="block hover:text-cyan-400 py-1">INICIO</a>
+            <div class="border-t border-white/10 pt-2">
+                <span class="block text-xs font-bold text-cyan-400 uppercase tracking-widest mb-2">Ayuntamiento</span>
+                <div class="space-y-2 pl-2">
+                    <button onclick="openAyuntamientoModal('directorio')" class="block w-full text-left hover:text-cyan-400 text-sm">Directorio Municipal</button>
+                    <button onclick="openAyuntamientoModal('valores')" class="block w-full text-left hover:text-cyan-400 text-sm">Valores</button>
+                    <button onclick="openAyuntamientoModal('info')" class="block w-full text-left hover:text-cyan-400 text-sm">Información General</button>
+                </div>
+            </div>
+            <button onclick="openDirectorioModal()" class="block w-full text-left hover:text-cyan-400 py-1 border-t border-white/10 pt-2 text-sm uppercase">Directorio General</button>
+            <button onclick="openHistoriaModal()" class="block w-full text-left hover:text-cyan-400 py-1 border-t border-white/10 pt-2 text-sm uppercase">Historia</button>
+            <!-- Botón Acceder en menú móvil -->
+            <a href="/login" class="block bg-cyan-500 hover:bg-cyan-400 text-center py-2 rounded-full text-white font-bold">ACCEDER</a>
+            <!-- Botón Visítanos en menú móvil -->
+            <a href="contacto" class="block bg-cyan-500 hover:bg-cyan-400 text-center py-2 rounded-full text-white font-bold">VISÍTANOS</a>
+            <!-- Botón REPORTES en menú móvil -->
+            <a href="reportar.html" class="block bg-cyan-500 hover:bg-cyan-400 text-center py-2 rounded-full text-white font-bold">REPORTES</a>
+        </div>
+    </nav>
+
+    <!-- ==================== HERO - SECCIÓN PRINCIPAL DE BIENVENIDA ==================== -->
+    <!-- Sección Hero: contiene título principal, subtítulo y botón de acción -->
+    <section id="inicio" class="hero-parallax min-h-screen flex items-center justify-center relative overflow-hidden">
+        <div class="text-center z-10 px-4">
+            <h2 class="text-cyan-300 text-xl md:text-2xl font-medium mb-4 tracking-[0.3em] uppercase opacity-0 transition-all duration-1000 translate-y-10" id="hero-subtitle">
+                La belleza del caribe
+            </h2>
+            <h1 class="text-6xl md:text-9xl font-bold mb-8 leading-tight opacity-0 transition-all duration-1000 delay-300 translate-y-10" id="hero-title">
+                H.Ayuntamiento <br><span class="italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Puerto Morelos</span>
+            </h1>
+            <div class="flex flex-wrap justify-center gap-4 opacity-0 transition-all duration-1000 delay-500" id="hero-btns">
+                <a href="#arrecife" class="glass px-8 py-4 rounded-full border border-cyan-500/50 hover:bg-cyan-500/20 transition group flex items-center gap-2">
+                    Explorar ahora <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition"></i>
+                </a>
+            </div>
+        </div>
+        <!-- Flecha animada para indicar scroll hacia abajo -->
+        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce cursor-pointer">
+            <i data-lucide="chevron-down" class="text-white w-8 h-8 opacity-50"></i>
+        </div>
+    </section>
+
+    <!-- ==================== SECCIÓN: ARRECIFE DE CORAL ==================== -->
+    <!-- Sección Arrecife: describe el patrimonio natural de Puerto Morelos -->
+    <section id="arrecife" class="py-24 px-6 relative bg-gradient-to-b from-[#03045e] to-[#023e8a]">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <span class="text-cyan-400 font-bold tracking-widest uppercase text-sm">Nuestro Patrimonio Natural</span>
+                    <h2 class="text-4xl md:text-5xl font-bold mt-4 mb-6 italic">El arrecife de coral</h2>
+                    <p class="text-gray-300 text-lg leading-relaxed mb-8">
+                        Puerto Morelos alberga la segunda barrera de coral más grande del mundo. Un santuario marino donde la vida explota en colores bajo aguas cristalinas.
+                    </p>
+                    <!-- Grid de dos columnas: características del ecosistema -->
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="glass p-4 rounded-2xl">
+                            <i data-lucide="wind" class="text-cyan-400 mb-2"></i>
+                            <h4 class="font-bold">Ecosistema</h4>
+                            <p class="text-xs text-gray-400">Protegido por Parque Nacional</p>
+                        </div>
+                        <div class="glass p-4 rounded-2xl">
+                            <i data-lucide="fish" class="text-cyan-400 mb-2"></i>
+                            <h4 class="font-bold">Biodiversidad</h4>
+                            <p class="text-xs text-gray-400">+600 especies marinas</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Imagen decorativa con animación flotante -->
+                <div class="relative reveal delay-300">
+                    <div class="absolute -inset-4 bg-cyan-500/20 blur-2xl rounded-full"></div>
+                    <img src="https://media-cdn.tripadvisor.com/media/photo-s/1b/b0/20/77/the-amazing-reef.jpg" alt="Snorkeling" class="rounded-3xl shadow-2xl relative z-10 border-4 border-white/10 animate-float">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== SECCIÓN: FARO ==================== -->
+    <!-- muestra el símbolo más emblemático de Puerto Morelos -->
+    <section id="faro" class="py-24 px-6 bg-[#023e8a] relative">
+        <div class="max-w-5xl mx-auto text-center reveal">
+            <h2 class="text-5xl md:text-7xl font-bold mb-12 italic">El Faro Inclinado</h2>
+            <div class="relative overflow-hidden rounded-3xl group">
+                <img src="https://rcacancun.gob.mx/wp-content/uploads/2022/11/faro-puerto-morelos.jpg" alt="Faro inclinado" class="w-full h-[500px] object-cover transition-transform duration-700 group-hover:scale-110">
+                <!-- Capa con texto superpuesto al hover -->
+                <div class="absolute inset-0 bg-gradient-to-t from-[#03045e] via-transparent to-transparent flex items-end p-12">
+                    <div class="text-left glass-dark p-8 rounded-2xl max-w-lg">
+                        <p class="text-xl italic mb-4 text-cyan-200">"El sobreviviente de mil tormentas"</p>
+                        <p class="text-sm text-gray-200">
+                            Tras el huracán Beulah en 1967, el faro quedó inclinado, convirtiéndose en el símbolo máximo de resiliencia y el ícono visual que define a Puerto Morelos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ================ACERCA DE - TARJETAS INFORMATIVAS ==================== -->
+    <!-- Sección Acerca de: tres tarjetas con información del municipio -->
+    <section id="cenotes" class="py-24 px-6 bg-gradient-to-b from-[#023e8a] to-[#0077b6]">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-bold">Acerca de</h2>
+                <p class="text-cyan-200 mt-4 max-w-2xl mx-auto">El H. Ayuntamiento de Puerto Morelos trabaja para mantener un gobierno transparente y accesible.</p>
+            </div>
+            
+            <!-- Grid de 3 columnas para las tarjetas -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Tarjeta 1: Nosotros -->
+                <div class="glass p-8 rounded-3xl card-hover reveal">
+                    <div class="h-48 mb-6 overflow-hidden rounded-2xl">
+                        <img src="https://scontent-mia3-3.xx.fbcdn.net/v/t39.30808-6/702991013_1410921894406870_989962190010081090_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGfBMLYzhfa6yF8xvK-EWiGM_OQ2U_eNtsz85DZT9422wP7bQ34WoQuWFxOtI7FeH77SY87IOABC4G8ygQClWZM&_nc_ohc=OQIw7UehfZoQ7kNvwH4bPkK&_nc_oc=AdqLh5EH-HZ07dEX3p4hDB1tX91KAnlMxj29ZF4BNUfOwp0S7U9MdBZaU5C00b4WUbc&_nc_zt=23&_nc_ht=scontent-mia3-3.xx&_nc_gid=hyQqrxh3KaD9_FjiWkgd1A&_nc_ss=7b2a8&oh=00_Af5QTrV2PYfpo6U96qBT0OPP__G332KGLhlYxiJp4rNW2Q&oe=6A1641D8" alt="Cenote Verde Lucero" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Nosotros</h3>
+                    <p class="text-sm text-gray-300 mb-6">Nuestro Compromiso es escuchar las necesidades de la ciudadanía y 
+                        ofrecer soluciones prácticas que mejoren la calidad de vida de todos los habitantes..</p>
+                    <div class="flex items-center text-cyan-400 text-sm font-bold cursor-pointer">
+                        EXPLORAR <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                    </div>
+                </div>
+                <!-- Tarjeta 2: Servicios para la comunidad -->
+                <div class="glass p-8 rounded-3xl card-hover reveal delay-200">
+                    <div class="h-48 mb-6 overflow-hidden rounded-2xl">
+                        <img src="https://scontent-mia5-2.xx.fbcdn.net/v/t39.30808-6/702660651_1408277604671299_4220575851780857403_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeH9jEIDAVG49OjuZI3JsvSS2G4St2GlKUTYbhK3YaUpRHnalL5wkKWPTl6irm4jsEeqAsUefd1P_aMw9HRwp9oP&_nc_ohc=Qlaujj3bLoIQ7kNvwGxKca7&_nc_oc=Adpa288fo6o3C6sG86R-S_U6B2KrtRRj9GpErdfYAUSrs_CIdqNC2p429REwsZ-5dGk&_nc_zt=23&_nc_ht=scontent-mia5-2.xx&_nc_gid=4Bi007UnW8KugXJmYZ1AhQ&_nc_ss=7b2a8&oh=00_Af4WMb4AW_Om-vP2Wze3mEhBjnw8TQnbNrkI7Zu8E-4ISg&oe=6A164E55" alt="Cenote Siete Bocas" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Servicios para la comunidad</h3>
+                    <p class="text-sm text-gray-300 mb-6">Ayuntamiento que impulsa programas sociales, servicios públicos eficientes y espacios de participación ciudadana.</p>
+                    <div class="flex items-center text-cyan-400 text-sm font-bold cursor-pointer">
+                        EXPLORAR <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                    </div>
+                </div>
+                <!-- Tarjeta 3: Desarrollo sostenible y bienestar -->
+                <div class="glass p-8 rounded-3xl card-hover reveal delay-400">
+                    <div class="h-48 mb-6 overflow-hidden rounded-2xl">
+                        <img src="https://scontent-mia5-1.xx.fbcdn.net/v/t39.30808-6/701421360_1414649130709358_8747679809209493702_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=833d8c&_nc_eui2=AeGikaYCv01TkPC5MFT6ikZynr0y42XxIV-evTLjZfEhX797TrgVDbf1oAxpKzy9fIJV5szBqt8YmxToyn0K6oWV&_nc_ohc=-EXNA7ywKRgQ7kNvwFiS5Co&_nc_oc=Adp_JGOYTlGKKklh5RmQkLiz4AVNQXZn-fLAYKhbURnPFP3qmJn76fb_RsRFzxkrGKE&_nc_zt=23&_nc_ht=scontent-mia5-1.xx&_nc_gid=TsJ0ZotubGZeCNBS6aznOw&_nc_ss=7b2a8&oh=00_Af7imNS4JsVsFqzpiRgzFt1SQXrt4nXLAIovTL3JBno8Jw&oe=6A164355" alt="Kin Ha" class="w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2">Desarrollo sostenible y bienestar</h3>
+                    <p class="text-sm text-gray-300 mb-6">El H. Ayuntamiento de Puerto Morelos promueve proyectos que equilibran el crecimiento económico con el cuidado del medio ambiente.
+                         Con iniciativas de ecoturismo, conservación de playas y apoyo a emprendedores locales, se busca un futuro próspero y sustentable para la comunidad.</p>
+                    <div class="flex items-center text-cyan-400 text-sm font-bold cursor-pointer">
+                        EXPLORAR <i data-lucide="external-link" class="ml-2 w-4 h-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ==================== MODALES DEL PORTAL INTERACTIVO ==================== -->
+
+    <!-- MODAL 1: Honorable Ayuntamiento (Directorio, Valores, Info General) -->
+    <!-- Modal que muestra información del ayuntamiento: directorio, valores o información general -->
+    <div id="ayuntamiento-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-all duration-300">
+        <div class="glass-dark border border-white/10 p-6 md:p-8 rounded-3xl w-full max-w-2xl relative animate-float shadow-2xl">
+            <!-- Botón Cerrar -->
+            <button onclick="closeAyuntamientoModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition p-2 hover:bg-white/10 rounded-full">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            <div id="ayuntamiento-modal-content" class="text-white space-y-4">
+                <!-- Se inyecta dinámicamente con JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Directorio General (información de dependencias y contactos) -->
+    <div id="directorio-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-all duration-300">
+        <div class="glass-dark border border-white/10 p-6 md:p-8 rounded-3xl w-full max-w-3xl relative animate-float shadow-2xl max-h-[90vh] overflow-y-auto">
+            <!-- Botón Cerrar -->
+            <button onclick="closeDirectorioModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition p-2 hover:bg-white/10 rounded-full">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+            
+            <h3 class="text-3xl font-bold mb-2 text-white italic flex items-center gap-2">
+                <i data-lucide="book-open" class="text-cyan-400"></i> Directorio General
+            </h3>
+            <p class="text-gray-400 text-sm mb-6">Comunícate directamente con nuestras áreas de atención ciudadana y seguridad municipal.</p>
+
+            <!-- Grid con las tarjetas de contacto de cada área municipal -->
+            <div class="grid md:grid-cols-2 gap-4">
+                <!-- Atención Ciudadana -->
+                <div class="glass p-4 rounded-xl flex items-center gap-4">
+                    <div class="bg-cyan-500/20 p-3 rounded-lg text-cyan-400"><i data-lucide="phone" class="w-5 h-5"></i></div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white">Atención Ciudadana</h4>
+                        <p class="text-xs text-gray-400">Horario: 9:00 AM - 4:00 PM</p>
+                        <p class="text-sm font-semibold text-cyan-300">998-512-3456 Ext. 101</p>
+                    </div>
+                </div>
+                <!-- Seguridad y Emergencias -->
+                <div class="glass p-4 rounded-xl flex items-center gap-4">
+                    <div class="bg-red-500/20 p-3 rounded-lg text-red-400"><i data-lucide="shield-alert" class="w-5 h-5"></i></div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white">Seguridad y Emergencias</h4>
+                        <p class="text-xs text-gray-400">Atención 24/7</p>
+                        <p class="text-sm font-semibold text-red-400">998-512-9111 / 911</p>
+                    </div>
+                </div>
+                <!-- Protección Civil -->
+                <div class="glass p-4 rounded-xl flex items-center gap-4">
+                    <div class="bg-cyan-500/20 p-3 rounded-lg text-cyan-400"><i data-lucide="heart" class="w-5 h-5"></i></div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white">Protección Civil</h4>
+                        <p class="text-xs text-gray-400">Atención médica primaria y rescate</p>
+                        <p class="text-sm font-semibold text-cyan-300">998-512-3456 Ext. 104</p>
+                    </div>
+                </div>
+                <!-- Secretaría de Turismo -->
+                <div class="glass p-4 rounded-xl flex items-center gap-4">
+                    <div class="bg-cyan-500/20 p-3 rounded-lg text-cyan-400"><i data-lucide="palmtree" class="w-5 h-5"></i></div>
+                    <div>
+                        <h4 class="font-bold text-sm text-white">Secretaría de Turismo</h4>
+                        <p class="text-xs text-gray-400">Información turística y apoyo</p>
+                        <p class="text-sm font-semibold text-cyan-300">998-512-3456 Ext. 205</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Historia de Puerto Morelos -->
+    <div id="historia-modal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-md hidden transition-all duration-300 overflow-y-auto">
+        <div class="glass-dark border border-white/10 p-8 md:p-12 rounded-3xl w-full max-w-5xl relative shadow-2xl my-8">
+            <!-- Botón Cerrar -->
+            <button onclick="closeHistoriaModal()" class="absolute top-4 right-4 text-gray-400 hover:text-white transition p-2 hover:bg-white/10 rounded-full">
+                <i data-lucide="x" class="w-7 h-7"></i>
+            </button>
+
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-7 space-y-4">
+                    <span class="text-cyan-400 text-xs font-bold uppercase tracking-widest block">Nuestras raíces ancestrales</span>
+                    <h3 class="text-4xl md:text-5xl font-bold italic text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500">
+                        Historia de Puerto Morelos
+                    </h3>
+                
+                    <div class="space-y-4 text-gray-300 text-sm md:text-base leading-relaxed">
+                        <p>
+                            Puerto Morelos tiene sus raíces en el antiguo asentamiento de la provincia maya de <strong class="text-cyan-300">Ekab</strong>. Históricamente, fue un punto de escala comercial clave para el comercio de sal, plumas y productos marinos antes de la llegada de los colonizadores.
+                        </p>
+                        <p>
+                            A finales del siglo XIX, la región cobró nueva relevancia gracias a la explotación del chicle, del corcho y de maderas tintóreas. En 1898, se fundó formalmente como puerto comercial marítimo para la salida de estos recursos hacia todo el mundo.
+                        </p>
+                        <p>
+                            Durante décadas, se mantuvo como una pacífica y unida comunidad pesquera, conservando su mística tradicional en plena Riviera Maya. Su historia cambió trascendentalmente el <strong class="text-cyan-300">6 de noviembre de 2015</strong>, cuando fue decretado oficialmente como el undécimo municipio libre y soberano de Quintana Roo, abriendo paso a una era de sustentabilidad, desarrollo y profunda identidad cultural.
+                        </p>
+                    </div>
+                </div>
+                   <div class="lg:col-span-5 relative">
+                    <div class="absolute -inset-4 bg-cyan-500/20 blur-2xl rounded-full"></div>
+                    <!-- Imagen del Faro Inclinado de Puerto Morelos (URL válida) -->
+                    <img src="https://th.bing.com/th/id/R.e3239830cb7656b324d8797af37c64eb?rik=uz2zQLWn6bkXrg&riu=http%3a%2f%2f25.media.tumblr.com%2ftumblr_m9g14lolxA1qcjg1ho1_1280.jpg&ehk=RsiYP%2fxaEbv9fY%2b2ZkXf38%2fyF%2b5cIuG8yNZPUSubgqM%3d&risl=&pid=ImgRaw&r=0" 
+                         alt="Faro Inclinado de Puerto Morelos - Símbolo de resiliencia tras el huracán Beulah de 1967" 
+                         class="rounded-3xl shadow-2xl relative z-10 border-4 border-white/10 animate-float w-full object-cover h-[350px]">
+                    <p class="text-xs text-cyan-300 mt-4 text-center italic relative z-10">El Faro Inclinado - Símbolo de resiliencia de Puerto Morelos</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <!-- ==================== CONTROLADOR JAVASCRIPT PRINCIPAL ==================== -->
+    <script>
+        // Inicializar Iconos Lucide
+        lucide.createIcons();
+
+        // Efecto de Burbujas de fondo (crea elementos div flotantes)
+        function createBubbles() {
+            const container = document.body;
+            const bubbleCount = 15;
+            
+            for (let i = 0; i < bubbleCount; i++) {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                
+                const size = Math.random() * 30 + 10 + 'px';
+                bubble.style.width = size;
+                bubble.style.height = size;
+                bubble.style.left = Math.random() * 100 + 'vw';
+                bubble.style.animationDuration = Math.random() * 4 + 6 + 's';
+                bubble.style.animationDelay = Math.random() * 5 + 's';
+                
+                container.appendChild(bubble);
+            }
+        }
+
+        // Animación al hacer Scroll (activa clase .active en elementos .reveal)
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(el => {
+                const windowHeight = window.innerHeight;
+                const revealTop = el.getBoundingClientRect().top;
+                const revealPoint = 150;
+
+                if (revealTop < windowHeight - revealPoint) {
+                    el.classList.add('active');
+                }
+            });
+        }
+
+        // Control del Navbar al Scroll (cambia estilo al hacer scroll)
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('glass-dark', 'py-4');
+                nav.classList.remove('py-6');
+            } else {
+                nav.classList.remove('glass-dark', 'py-4');
+                nav.classList.add('py-6');
+            }
+            revealOnScroll();
+        });
+
+        // Animaciones iniciales Hero (fade-in de los elementos)
+        window.onload = () => {
+            document.getElementById('hero-subtitle').style.opacity = '1';
+            document.getElementById('hero-subtitle').style.transform = 'translateY(0)';
+            
+            setTimeout(() => {
+                document.getElementById('hero-title').style.opacity = '1';
+                document.getElementById('hero-title').style.transform = 'translateY(0)';
+            }, 300);
+
+            setTimeout(() => {
+                document.getElementById('hero-btns').style.opacity = '1';
+                document.getElementById('hero-btns').style.transform = 'translateY(0)';
+            }, 600);
+
+            createBubbles();
+            revealOnScroll();
+        };
+
+        // Menú Móvil: toggle para mostrar/ocultar
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenuDropdown = document.getElementById('mobile-menu-dropdown');
+        menuBtn.addEventListener('click', () => {
+            menuBtn.classList.toggle('rotate-90');
+            mobileMenuDropdown.classList.toggle('hidden');
+        });
+
+        // Cerrar menú móvil al seleccionar un link
+        document.querySelectorAll('#mobile-menu-dropdown a, #mobile-menu-dropdown button').forEach(item => {
+            item.addEventListener('click', () => {
+                mobileMenuDropdown.classList.add('hidden');
+                menuBtn.classList.remove('rotate-90');
+            });
+        });
+
+
+        /* ==================== CONTROL DEL DROPDOWN (HONORABLE AYUNTAMIENTO) ==================== */
+        const ayuntamientoBtn = document.getElementById('nav-ayuntamiento-btn');
+        const ayuntamientoDropdown = document.getElementById('ayuntamiento-dropdown');
+
+        if (ayuntamientoBtn && ayuntamientoDropdown) {
+            ayuntamientoBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                ayuntamientoDropdown.classList.toggle('show');
+            });
+
+            // Cerrar dropdown si se hace click fuera
+            document.addEventListener('click', () => {
+                ayuntamientoDropdown.classList.remove('show');
+            });
+        }
+
+
+        /* ==================== CONTROLADORES DE MODALES ==================== */
+
+        // MODAL 1: Honorable Ayuntamiento (Directorio, Valores, Info)
+        function openAyuntamientoModal(section) {
+            const modal = document.getElementById('ayuntamiento-modal');
+            const content = document.getElementById('ayuntamiento-modal-content');
+            let contentHtml = '';
+
+            if (section === 'directorio') {
+                contentHtml = `
+                    <h3 class="text-3xl font-bold mb-4 text-white italic flex items-center gap-2">
+                        <i data-lucide="users" class="text-cyan-400"></i> Directorio Municipal
+                    </h3>
+                    <p class="text-gray-400 text-sm mb-6">Integrantes del Cabildo de Puerto Morelos.</p>
+                    <div class="space-y-4">
+                        <div class="bg-white/5 border border-white/10 p-4 rounded-2xl flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-white">C. Blanca Merari Tziu Muñoz</h4>
+                                <p class="text-xs text-cyan-400 uppercase tracking-widest font-bold">Presidenta Municipal</p>
+                            </div>
+                            <span class="text-xs bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-full font-bold">Titular</span>
+                        </div>
+                        <div class="bg-white/5 border border-white/10 p-4 rounded-2xl flex justify-between items-center">
+                            <div>
+                                <h4 class="font-bold text-white">Lic. José de Jesús Espinosa Payán</h4>
+                                <p class="text-xs text-cyan-400 uppercase tracking-widest font-bold">Secretario General</p>
+                            </div>
+                            <span class="text-xs bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-full font-bold">Secretaría</span>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'valores') {
+                contentHtml = `
+                    <h3 class="text-3xl font-bold mb-4 text-white italic flex items-center gap-2">
+                        <i data-lucide="shield-check" class="text-cyan-400"></i> Valores Municipales
+                    </h3>
+                    <p class="text-gray-400 text-sm mb-6">Nuestros pilares éticos de gobernabilidad.</p>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="glass p-4 rounded-2xl">
+                            <h4 class="font-bold text-cyan-300 flex items-center gap-1">Transparencia</h4>
+                            <p class="text-xs text-gray-300 mt-1">Acceso íntegro a la información pública.</p>
+                        </div>
+                        <div class="glass p-4 rounded-2xl">
+                            <h4 class="font-bold text-cyan-300 flex items-center gap-1">Compromiso</h4>
+                            <p class="text-xs text-gray-300 mt-1">Elevar continuamente el bienestar social.</p>
+                        </div>
+                    </div>
+                `;
+            } else if (section === 'info') {
+                contentHtml = `
+                    <h3 class="text-3xl font-bold mb-4 text-white italic flex items-center gap-2">
+                        <i data-lucide="info" class="text-cyan-400"></i> Información General
+                    </h3>
+                    <p class="text-gray-400 text-sm mb-6">Datos de interés de nuestro municipio.</p>
+                    <div class="space-y-4 text-sm text-gray-300">
+                        <p><strong>Ubicación:</strong> Zona norte del Estado de Quintana Roo, puerta de entrada a la Riviera Maya.</p>
+                        <p><strong>Población:</strong> Aproximadamente 37,000 habitantes.</p>
+                    </div>
+                `;
+            }
+
+            content.innerHTML = contentHtml;
+            modal.classList.remove('hidden');
+            lucide.createIcons();
+            ayuntamientoDropdown.classList.remove('show');
+        }
+
+        function closeAyuntamientoModal() {
+            document.getElementById('ayuntamiento-modal').classList.add('hidden');
+        }
+
+        // MODAL 2: Directorio General
+        function openDirectorioModal() {
+            document.getElementById('directorio-modal').classList.remove('hidden');
+        }
+
+        function closeDirectorioModal() {
+            document.getElementById('directorio-modal').classList.add('hidden');
+        }
+
+        // MODAL 3: Historia
+        function openHistoriaModal() {
+            document.getElementById('historia-modal').classList.remove('hidden');
+        }
+
+        function closeHistoriaModal() {
+            document.getElementById('historia-modal').classList.add('hidden');
+        }
+
+        // Cerrar modales con click externo (fuera del contenido del modal)
+        window.addEventListener('click', (e) => {
+            const modalAyunt = document.getElementById('ayuntamiento-modal');
+            const modalDir = document.getElementById('directorio-modal');
+            const modalHist = document.getElementById('historia-modal');
+
+            if (e.target === modalAyunt) closeAyuntamientoModal();
+            if (e.target === modalDir) closeDirectorioModal();
+            if (e.target === modalHist) closeHistoriaModal();
+        });
+
+
+        /* ==================== FORMULARIOS EVENTOS ==================== */
+        // Evento para el formulario de newsletter (si existe)
+        document.getElementById('newsletter-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const msg = document.getElementById('newsletter-msg');
+            msg.textContent = '¡Te has suscrito con éxito al boletín oficial!';
+            msg.className = "text-cyan-400 text-xs mt-3 block font-bold";
+            msg.classList.remove('hidden');
+            this.reset();
+        });
+    </script>
+
+    <!-- ==================== FOOTER - PIE DE PÁGINA ==================== -->
+    <footer class="bg-[#03045e] text-gray-400 py-8 mt-4 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-sm">&copy; 2025 H. Ayuntamiento de Puerto Morelos · Transparencia y Servicio</p>
+            <!-- Navegación secundaria en el footer -->
+            <nav class="mt-3 flex flex-wrap justify-center gap-6">
+                <a href="#inicio" class="text-gray-500 hover:text-gray-300 text-xs transition">Inicio</a>
+                <a href="#arrecife" class="text-gray-500 hover:text-gray-300 text-xs transition">Patrimonio</a>
+                <a href="#faro" class="text-gray-500 hover:text-gray-300 text-xs transition">Faro</a>
+                <!-- Enlace a la página de contacto -->
+                <a href="contacto" class="text-gray-500 hover:text-gray-300 text-xs transition">Contacto</a>
+                <!-- Enlace al panel de administración (acceso restringido) -->
+                <a href="admin/login.html" class="text-cyan-400 hover:text-cyan-300 text-xs transition font-bold">🔐 Panel de Administración</a>
+            </nav>
+        </div>
+    </footer>
+</body>
+</html>

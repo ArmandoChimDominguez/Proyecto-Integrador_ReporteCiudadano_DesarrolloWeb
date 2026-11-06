@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: linear-gradient(135deg, #03045e, #023e8a, #0077b6);
+      min-height: 100vh;
+    }
+    .glass-dark {
+      background: rgba(84,86,223,0.75);
+      backdrop-filter: blur(16px);
+    }
+  </style>
+</head>
+<body class="flex justify-center items-center p-4">
+  <!-- ==================== CONTENEDOR PRINCIPAL DEL LOGIN ==================== -->
+  <main class="glass-dark p-8 rounded-3xl w-96">
+    <!-- Encabezado con título -->
+    <header>
+      <h1 class="text-3xl font-bold text-center text-cyan-400 mb-6">Admin Login</h1>
+    </header>
+
+    <!-- ==================== SECCIÓN: FORMULARIO DE ACCESO ==================== -->
+    <section aria-labelledby="form-login">
+      <h2 id="form-login" class="sr-only">Formulario de inicio de sesión</h2>
+      <form action="dashboard.html" method="POST">
+        <!-- Campo: Correo electrónico (type="email") -->
+        <div class="mb-4">
+          <label for="email" class="sr-only">Correo electrónico</label>
+          <input id="email" type="email" name="email" placeholder="admin@puertomorelos.gob.mx"
+                 class="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white"
+                 required>
+        </div>
+
+        <!-- Campo: Contraseña (type="password") -->
+        <div class="mb-6">
+          <label for="password" class="sr-only">Contraseña</label>
+          <input id="password" type="password" name="password" placeholder="Contraseña"
+                 class="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white"
+                 required>
+        </div>
+
+        <!-- Botón de envío (type="submit") -->
+        <button type="submit"
+                class="w-full bg-cyan-500 hover:bg-cyan-400 py-3 rounded-xl font-bold">
+          Ingresar
+        </button>
+      </form>
+    </section>
+
+    <!-- ==================== ENLACE DE RETORNO ==================== -->
+    <footer class="text-center text-gray-400 text-sm mt-4">
+      <a href="../index.html" class="text-cyan-400">← Volver al sitio</a>
+    </footer>
+  </main>
+</body>
+</html>

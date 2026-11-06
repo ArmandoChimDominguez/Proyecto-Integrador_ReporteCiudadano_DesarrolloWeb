@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Reportes | Puerto Morelos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'caribbean': '#00b4d8',
+            'ocean': '#0e4886'
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #03045e, #023e8a, #0077b6);
+      min-height: 100vh;
+    }
+    .glass-dark { background: rgba(84,86,223,0.75); backdrop-filter: blur(16px); }
+  </style>
+</head>
+<body>
+  <!-- ==================== BARRA DE NAVEGACIÓN ==================== -->
+  <nav class="fixed top-0 w-full z-50 p-6 glass-dark py-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <!-- Logo con ícono de olas y nombre del sitio -->
+      <a href="index.html" class="text-2xl font-bold flex items-center gap-2">
+        <i data-lucide="waves" class="text-cyan-400"></i>
+        <span>PUERTO <span class="text-cyan-400">MORELOS</span></span>
+      </a>
+      <!-- Enlaces de navegación (ocultos en móvil) -->
+      <div class="hidden lg:flex space-x-8 text-sm">
+        <a href="index.html" class="hover:text-cyan-400 transition">INICIO</a>
+        <a href="reportar.html" class="hover:text-cyan-400 transition">REPORTAR</a>
+        <a href="mis_reportes.html" class="text-cyan-400 transition">MIS REPORTES</a>
+        <a href="contacto.html" class="hover:text-cyan-400 transition">CONTACTO</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+  <main class="pt-32 pb-20 px-6 max-w-4xl mx-auto">
+    <!-- Encabezado de la página -->
+    <header class="mb-6">
+      <h1 class="text-3xl font-bold text-cyan-400">Mis Reportes</h1>
+      <p class="text-gray-300">Aquí puedes consultar el estado de tus reportes enviados.</p>
+    </header>
+
+    <!-- ==================== SECCIÓN: TABLA DE REPORTES ==================== -->
+    <!-- Tarjeta glassmorphism que contiene la tabla de reportes -->
+    <section aria-labelledby="lista-reportes" class="glass-dark rounded-3xl p-6">
+      <h2 id="lista-reportes" class="sr-only">Lista de reportes del ciudadano</h2>
+      
+      <!-- Tabla con estructura semántica: thead, tbody, th scope -->
+      <table class="w-full bg-white/10 rounded-2xl">
+        <!-- Cabecera de la tabla con los títulos de cada columna -->
+        <thead class="bg-cyan-500/30">
+          <tr>
+            <th scope="col" class="p-3">ID</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Ubicación</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <!-- Cuerpo de la tabla con los datos de cada reporte -->
+        <tbody>
+          <!-- Fila 1: Reporte de bache pendiente -->
+          <tr>
+            <td class="p-3">001</td>
+            <td>Bache</td>
+            <td>Av. Tulum</td>
+            <td class="text-yellow-300">Pendiente</td>
+            <td><a href="detalle_reporte.html?id=1" class="text-cyan-400 hover:underline">Ver detalle</a></td>
+          </tr>
+          <!-- Fila 2: Reporte de alumbrado resuelto -->
+          <tr>
+            <td class="p-3">002</td>
+            <td>Alumbrado</td>
+            <td>Calle 10</td>
+            <td class="text-green-300">Resuelto</td>
+            <td><a href="detalle_reporte.html?id=2" class="text-cyan-400 hover:underline">Ver detalle</a></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <!-- Pie de página con copyright y enlace al panel de administración -->
+  <footer class="bg-[#03045e] text-gray-400 py-6 text-center text-sm mt-8">
+    <p>&copy; 2025 H. Ayuntamiento de Puerto Morelos</p>
+    <p class="mt-2"><a href="admin/login.html" class="text-cyan-400 hover:underline">🔐 Panel de Administración</a></p>
+  </footer>
+  
+  <script>lucide.createIcons();</script>
+</body>
+</html>

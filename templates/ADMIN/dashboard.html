@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background:#0e4886; }
+    .glass-dark { background:rgba(84,86,223,0.75); backdrop-filter:blur(16px); }
+  </style>
+</head>
+<body class="flex min-h-screen">
+  <!-- ==================== BARRA LATERAL (SIDEBAR) ==================== -->
+  <aside class="w-64 bg-ocean/90 p-6">
+    <h2 class="text-2xl font-bold text-cyan-400">Admin</h2>
+    <nav aria-label="Menú principal" class="mt-8 space-y-3">
+      <a href="dashboard.html" class="block py-2 px-4 bg-cyan-500/20 rounded-lg">Dashboard</a>
+      <a href="reportes.html" class="block py-2 px-4 hover:bg-white/10">Reportes</a>
+      <a href="reporte_nuevo.html" class="block py-2 px-4 hover:bg-white/10">+ Nuevo</a>
+      <a href="login.html" class="block py-2 px-4 text-red-400 mt-10">Salir</a>
+    </nav>
+  </aside>
+
+  <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+  <main class="flex-1 p-8">
+    <!-- Encabezado de la página -->
+    <header>
+      <h1 class="text-3xl font-bold text-white mb-6">Dashboard</h1>
+    </header>
+
+    <!-- ==================== SECCIÓN: TARJETAS DE ESTADÍSTICAS ==================== -->
+    <!-- Grid de 3 columnas para las métricas -->
+    <section aria-labelledby="estadisticas" class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <h2 id="estadisticas" class="sr-only">Estadísticas de reportes</h2>
+      <!-- Tarjeta: Total de reportes -->
+      <article class="glass-dark p-6 rounded-2xl">
+        <h3>Total Reportes</h3>
+        <p class="text-3xl font-bold text-cyan-400">156</p>
+      </article>
+      <!-- Tarjeta: Reportes atendidos -->
+      <article class="glass-dark p-6 rounded-2xl">
+        <h3>Atendidos</h3>
+        <p class="text-3xl font-bold text-green-400">98</p>
+      </article>
+      <!-- Tarjeta: Reportes pendientes -->
+      <article class="glass-dark p-6 rounded-2xl">
+        <h3>Pendientes</h3>
+        <p class="text-3xl font-bold text-yellow-400">58</p>
+      </article>
+    </section>
+
+    <!-- ==================== SECCIÓN: TABLA DE REPORTES RECIENTES ==================== -->
+    <section aria-labelledby="recientes">
+      <h2 id="recientes" class="text-2xl font-bold text-white mb-4">Reportes Recientes</h2>
+      <!-- Tabla con estructura semántica: thead, tbody, th scope -->
+      <table class="w-full bg-white/10 rounded-2xl">
+        <thead class="bg-cyan-500/30">
+          <tr>
+            <th scope="col" class="p-3">ID</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Fecha</th>
+            <th scope="col">Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Fila 1: Reporte de bache pendiente -->
+          <tr>
+            <td class="p-3">001</td>
+            <td>Bache</td>
+            <td>2025-05-20</td>
+            <td class="text-yellow-300">Pendiente</td>
+          </tr>
+          <!-- Fila 2: Reporte de alumbrado resuelto -->
+          <tr>
+            <td class="p-3">002</td>
+            <td>Alumbrado</td>
+            <td>2025-05-18</td>
+            <td class="text-green-300">Resuelto</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

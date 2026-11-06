@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestionar Reportes</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background:#0e4886; }
+    .glass-dark { background:rgba(84,86,223,0.75); }
+  </style>
+</head>
+<body class="flex min-h-screen">
+  <!-- ==================== BARRA LATERAL (SIDEBAR) ==================== -->
+  <aside class="w-64 bg-ocean/90 p-6">
+    <h2 class="text-2xl text-cyan-400">Admin</h2>
+    <nav aria-label="Menú principal" class="mt-6 space-y-2">
+      <a href="dashboard.html" class="block py-2">Dashboard</a>
+      <a href="reportes.html" class="block py-2 bg-cyan-500/20 rounded-lg">Reportes</a>
+      <a href="reporte_nuevo.html" class="block py-2">+ Nuevo</a>
+      <a href="login.html" class="block py-2 text-red-400 mt-10">Salir</a>
+    </nav>
+  </aside>
+
+  <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+  <main class="flex-1 p-8">
+    <!-- Encabezado de la página -->
+    <header>
+      <h1 class="text-3xl font-bold text-white mb-6">Reportes</h1>
+    </header>
+
+    <!-- ==================== SECCIÓN: TABLA DE REPORTES CRUD ==================== -->
+    <section aria-labelledby="lista-reportes">
+      <h2 id="lista-reportes" class="sr-only">Lista de reportes</h2>
+      <!-- Tabla con estructura semántica: thead, tbody, th scope -->
+      <table class="w-full bg-white/10 rounded-2xl">
+        <thead class="bg-cyan-500/30">
+          <tr>
+            <th scope="col" class="p-3">ID</th>
+            <th scope="col">Tipo</th>
+            <th scope="col">Ubicación</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Fila 1: Reporte de bache con acciones Editar/Eliminar -->
+          <tr>
+            <td class="p-3">001</td>
+            <td>Bache</td>
+            <td>Av. Tulum</td>
+            <td class="text-yellow-300">Pendiente</td>
+            <td>
+              <!-- Enlace para editar (redirige a página de edición) -->
+              <a href="reporte_editar.html?id=1" class="text-cyan-400">Editar</a> |
+              <!-- Formulario para eliminar con confirmación -->
+              <form style="display:inline" onsubmit="return confirm('¿Eliminar?')">
+                <input type="hidden" name="accion" value="eliminar">
+                <button type="submit" class="text-red-400">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+          <!-- Fila 2: Reporte de alumbrado con acciones Editar/Eliminar -->
+          <tr>
+            <td class="p-3">002</td>
+            <td>Alumbrado</td>
+            <td>Calle 10</td>
+            <td class="text-green-300">Resuelto</td>
+            <td>
+              <!-- Enlace para editar (redirige a página de edición) -->
+              <a href="reporte_editar.html?id=2" class="text-cyan-400">Editar</a> |
+              <!-- Formulario para eliminar con confirmación -->
+              <form style="display:inline" onsubmit="return confirm('¿Eliminar?')">
+                <input type="hidden" name="accion" value="eliminar">
+                <button type="submit" class="text-red-400">Eliminar</button>
+              </form>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

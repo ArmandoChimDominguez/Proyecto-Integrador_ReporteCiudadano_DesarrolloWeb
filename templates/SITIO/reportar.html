@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportar | Puerto Morelos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={theme:{extend:{colors:{'caribbean':'#00b4d8','ocean':'#0e4886','coral':'#e63946'}}}}</script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Montserrat', sans-serif; background: linear-gradient(135deg, #03045e, #023e8a, #0077b6); min-height: 100vh; }
+        .glass-dark { background: rgba(84, 86, 223, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: #00b4d8; box-shadow: 0 0 0 2px rgba(0,180,216,0.3); }
+        .bubble { position: fixed; bottom: -100px; background: rgba(0, 180, 216, 0.15); border-radius: 50%; pointer-events: none; animation: rise 10s infinite linear; z-index: 0; }
+        @keyframes rise { 0% { transform: translateY(0) scale(1); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(-110vh) scale(1.2); opacity: 0; } }
+    </style>
+</head>
+<body class="relative min-h-screen">
+    <!-- ==================== BARRA DE NAVEGACIÓN ==================== -->
+    <nav class="fixed top-0 w-full z-50 p-6 glass-dark py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold flex items-center gap-2"><i data-lucide="waves" class="text-cyan-400"></i><span>PUERTO <span class="text-cyan-400">MORELOS</span></span></a>
+            <div class="hidden lg:flex space-x-8 text-sm">
+                <a href="index.html" class="hover:text-cyan-400">INICIO</a>
+                <a href="reportar.html" class="text-cyan-400">REPORTAR</a>
+                <a href="mis_reportes.html" class="hover:text-cyan-400">MIS REPORTES</a>
+                <a href="contacto.html" class="hover:text-cyan-400">CONTACTO</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ==================== FORMULARIO PARA REPORTAR INCIDENCIA ==================== -->
+    <div class="flex justify-center items-center min-h-screen p-6 pt-32">
+        <div class="glass-dark p-8 rounded-3xl w-full max-w-3xl shadow-2xl">
+            <!-- Encabezado del formulario -->
+            <div class="text-center mb-6">
+                <a href="index.html" class="text-cyan-400 text-sm hover:underline">← Volver al inicio</a>
+                <h1 class="text-4xl font-bold text-cyan-400 mt-2 font-serif">Reportar Incidencia</h1>
+                <p class="text-gray-400 text-sm">Ayúdanos a mejorar Puerto Morelos</p>
+            </div>
+
+            <form action="#" method="POST" class="space-y-6">
+                <!-- === CAMPO 1: UBICACIÓN DEL PROBLEMA (Fieldset) === -->
+                <fieldset class="border border-white/20 rounded-2xl p-5">
+                    <legend class="text-cyan-400 font-bold px-3 text-lg">Ubicación del problema</legend>
+                    <div class="grid md:grid-cols-2 gap-4 mt-4">
+                        <!-- Input text: Calle -->
+                        <div><label for="calle" class="block text-sm font-medium mb-1">Calle *</label><input type="text" id="calle" name="calle" placeholder="Ej: Av. Tulum" required class="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white"></div>
+                        <!-- Input text: Colonia -->
+                        <div><label for="colonia" class="block text-sm font-medium mb-1">Colonia *</label><input type="text" id="colonia" name="colonia" placeholder="Ej: Centro" required class="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white"></div>
+                        <!-- Input number: Número exterior -->
+                        <div><label for="numero" class="block text-sm font-medium mb-1">Número</label><input type="number" id="numero" name="numero" placeholder="123" class="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white"></div>
+                        <!-- Input tel: Teléfono de contacto -->
+                        <div><label for="telefono" class="block text-sm font-medium mb-1">Teléfono</label><input type="tel" id="telefono" name="telefono" placeholder="9981234567" class="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white"></div>
+                    </div>
+                </fieldset>
+
+                <!-- === CAMPO 2: DETALLE DEL REPORTE (Fieldset) === -->
+                <fieldset class="border border-white/20 rounded-2xl p-5">
+                    <legend class="text-cyan-400 font-bold px-3 text-lg">Detalle del reporte</legend>
+                    <!-- Select: Tipo de problema -->
+                    <div class="mb-4"><label for="tipo" class="block text-sm font-medium mb-1">Tipo de problema *</label>
+                        <select id="tipo" name="tipo" required class="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white">
+                            <option value="">Selecciona...</option>
+                            <option value="bache">Bache</option><option value="alumbrado">Alumbrado público dañado</option>
+                            <option value="basura">Basura acumulada</option><option value="fuga">Fuga de agua</option>
+                        </select>
+                    </div>
+                    <!-- Radio buttons: Nivel de urgencia -->
+                    <div class="mb-4"><label class="block text-sm font-medium mb-2">Urgencia *</label>
+                        <div class="flex gap-6"><label class="flex items-center gap-2"><input type="radio" name="urgencia" value="baja" class="accent-cyan-400"> Baja</label>
+                        <label class="flex items-center gap-2"><input type="radio" name="urgencia" value="media" class="accent-cyan-400"> Media</label>
+                        <label class="flex items-center gap-2"><input type="radio" name="urgencia" value="alta" required class="accent-cyan-400"> Alta</label></div>
+                    </div>
+                    <!-- Textarea: Descripción del problema -->
+                    <div class="mb-4"><label for="descripcion" class="block text-sm font-medium mb-1">Descripción *</label>
+                        <textarea id="descripcion" name="descripcion" rows="4" placeholder="Describe el problema detalladamente..." required class="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white"></textarea>
+                    </div>
+                    <!-- Input email: Correo para seguimiento -->
+                    <div class="mb-4"><label for="email" class="block text-sm font-medium mb-1">Correo para seguimiento *</label>
+                        <input type="email" id="email" name="email" placeholder="tu@email.com" required class="w-full p-3 rounded-xl bg-white/10 border border-white/20 text-white">
+                    </div>
+                    <!-- Checkbox: Aceptación de términos -->
+                    <div><label class="flex items-center gap-2"><input type="checkbox" name="terminos" required class="w-4 h-4 accent-cyan-400"> Acepto que la información es verídica *</label></div>
+                </fieldset>
+
+                <!-- === BOTONES: LIMPIAR Y ENVIAR === -->
+                <div class="flex gap-4 justify-end">
+                    <button type="reset" class="px-6 py-3 rounded-xl bg-white/10 border border-white/20 hover:bg-white/20 transition">Limpiar</button>
+                    <button type="submit" class="px-8 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 font-bold transition">Enviar reporte</button>
+                </div>
+            </form>
+            <!-- Enlace al panel de administración -->
+            <div class="mt-6 text-center"><a href="admin/login.html" class="text-cyan-400 text-sm hover:underline">🔐 Panel de Administración</a></div>
+        </div>
+    </div>
+    <script>lucide.createIcons();</script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle de Reporte | Puerto Morelos</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { 'caribbean': '#00b4d8' }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #03045e, #023e8a, #0077b6);
+    }
+    .glass-dark { background: rgba(84,86,223,0.75); backdrop-filter: blur(16px); }
+  </style>
+</head>
+<body>
+  <!-- ==================== BARRA DE NAVEGACIÓN ==================== -->
+  <nav class="fixed top-0 w-full z-50 p-6 glass-dark py-4">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <!-- Logo con ícono de olas y nombre del sitio -->
+      <a href="index.html" class="text-2xl font-bold flex items-center gap-2">
+        <i data-lucide="waves" class="text-cyan-400"></i>
+        <span>PUERTO <span class="text-cyan-400">MORELOS</span></span>
+      </a>
+      <!-- Enlaces de navegación (ocultos en móvil) -->
+      <div class="hidden lg:flex space-x-8 text-sm">
+        <a href="index.html" class="hover:text-cyan-400 transition">INICIO</a>
+        <a href="reportar.html" class="hover:text-cyan-400 transition">REPORTAR</a>
+        <a href="mis_reportes.html" class="hover:text-cyan-400 transition">MIS REPORTES</a>
+        <a href="contacto.html" class="hover:text-cyan-400 transition">CONTACTO</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+  <main class="pt-32 pb-20 px-6 max-w-3xl mx-auto">
+    <!-- Encabezado con enlace para volver a la lista de reportes -->
+    <header>
+      <a href="mis_reportes.html" class="text-cyan-400 text-sm hover:underline">← Volver a mis reportes</a>
+      <h1 class="text-3xl font-bold text-cyan-400 mt-4 font-serif">Reporte #001</h1>
+      <p class="text-gray-400 mb-6">Registrado el 20 de mayo de 2025</p>
+    </header>
+
+    <!-- ==================== SECCIÓN: DETALLE DEL REPORTE ==================== -->
+    <!-- Tarjeta glassmorphism que muestra toda la información del reporte -->
+    <section aria-labelledby="detalle-reporte" class="glass-dark rounded-3xl p-8">
+      <h2 id="detalle-reporte" class="sr-only">Detalle del reporte</h2>
+      <div class="space-y-4">
+        <!-- Tipo de problema reportado -->
+        <div><span class="font-bold text-cyan-400">Tipo:</span> Bache</div>
+        <!-- Ubicación del problema -->
+        <div><span class="font-bold text-cyan-400">Ubicación:</span> Av. Tulum, esquina con calle 10</div>
+        <!-- Descripción detallada -->
+        <div><span class="font-bold text-cyan-400">Descripción:</span> Bache profundo que ha causado daños a varios vehículos.</div>
+        <!-- Estado actual con badge de color -->
+        <div>
+          <span class="font-bold text-cyan-400">Estado:</span>
+          <span class="bg-yellow-500/30 text-yellow-300 px-3 py-1 rounded-full">Pendiente</span>
+        </div>
+        <!-- Lista con historial de seguimiento (lista no ordenada) -->
+        <div>
+          <span class="font-bold text-cyan-400">Historial:</span>
+          <ul class="list-disc list-inside text-gray-300 mt-2">
+            <li>20/05/2025 - Reporte registrado</li>
+            <li>21/05/2025 - Turnado a Obras Públicas</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <!-- Pie de página con copyright y enlace al panel de administración -->
+  <footer class="bg-[#03045e] text-gray-400 py-6 text-center text-sm mt-8">
+    <p>&copy; 2025 H. Ayuntamiento de Puerto Morelos</p>
+    <p class="mt-2"><a href="admin/login.html" class="text-cyan-400 hover:underline">🔐 Panel de Administración</a></p>
+  </footer>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

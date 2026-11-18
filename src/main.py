@@ -2,7 +2,7 @@
 from pathlib import Path
 from typing import Literal
 
-from fastapi import FastAPI, HTTPException, status, Request
+from fastapi import FastAPI, HTTPException, Request, Response, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 
 app = FastAPI(
     title="Sistema de Reporte Ciudadano",
-    version="0.2.0",
+    version="0.1.0",
     description="API para organizar y dar seguimiento a reportes ciudadanos."
 )
 
@@ -65,6 +65,14 @@ class TareaResponse(BaseModel):
     estado: str
 
 
+class ListaTableros(BaseModel):
+    tableros: list[TableroResponse]
+
+
+class ListaTareas(BaseModel):
+    tareas: list[TareaResponse]
+
+
 # ==========================================
 # ALMACENAMIENTO TEMPORAL
 # ==========================================
@@ -84,15 +92,14 @@ USUARIO_ID = 1
 
 @app.exception_handler(StarletteHTTPException)
 async def manejar_error_http(request, exc):
+    codigos = {404: "RECURSO_NO_ENCONTRADO", 405: "METODO_NO_PERMITIDO"}
     return JSONResponse(
         status_code=exc.status_code,
+        # Se conservan los encabezados (por ejemplo "Allow" en un 405)
+        headers=getattr(exc, "headers", None),
         content={
             "error": {
-                "codigo": (
-                    "RECURSO_NO_ENCONTRADO"
-                    if exc.status_code == 404
-                    else "ERROR_HTTP"
-                ),
+                "codigo": codigos.get(exc.status_code, "ERROR_HTTP"),
                 "mensaje": str(exc.detail)
             }
         }
@@ -245,9 +252,15 @@ def crear_tablero(datos: TableroCreate):
     return nuevo_tablero
 
 
-@app.get("/api/tableros")
+@app.get("/api/tableros", response_model=ListaTableros)
 def listar_tableros():
-    return list(tableros.values())
+    # Hito 1: usuario fijo; solo se listan los tableros de ese usuario
+    return {
+        "tableros": [
+            tablero for tablero in tableros.values()
+            if tablero["usuario_id"] == USUARIO_ID
+        ]
+    }
 
 
 # ==========================================
@@ -285,7 +298,7 @@ def crear_tarea(tablero_id: int, datos: TareaCreate):
     return nueva_tarea
 
 
-@app.get("/api/tableros/{tablero_id}/tareas")
+@app.get("/api/tableros/{tablero_id}/tareas", response_model=ListaTareas)
 def listar_tareas(tablero_id: int):
 
     if tablero_id not in tableros:
@@ -294,10 +307,12 @@ def listar_tareas(tablero_id: int):
             detail="El tablero solicitado no existe."
         )
 
-    return [
-        tarea for tarea in tareas.values()
-        if tarea["tablero_id"] == tablero_id
-    ]
+    return {
+        "tareas": [
+            tarea for tarea in tareas.values()
+            if tarea["tablero_id"] == tablero_id
+        ]
+    }
 
 
 @app.get("/api/tareas/{tarea_id}", response_model=TareaResponse)
@@ -312,7 +327,7 @@ def consultar_tarea(tarea_id: int):
     return tareas[tarea_id]
 
 
-@app.delete("/api/tareas/{tarea_id}")
+@app.delete("/api/tareas/{tarea_id}", status_code=status.HTTP_204_NO_CONTENT)
 def eliminar_tarea(tarea_id: int):
 
     if tarea_id not in tareas:
@@ -323,6 +338,5 @@ def eliminar_tarea(tarea_id: int):
 
     del tareas[tarea_id]
 
-    return {
-        "mensaje": "Tarea eliminada correctamente."
-    }
+    # 204 No Content: la eliminación fue exitosa y no hay cuerpo
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

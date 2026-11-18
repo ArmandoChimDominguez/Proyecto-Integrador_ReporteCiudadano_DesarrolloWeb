@@ -1,7 +1,7 @@
 # Proyecto Integrador · Sistema de Reporte Ciudadano
 
 **Curso:** Desarrollo de Aplicaciones Web (DAB-2201) · TecNM Cancún  
-**Equipo:** Pedro Pablo Pool Ché (`XxZoroxX10`) y `BrokeniGS` (L23531079)  
+**Equipo:** Pedro Pablo Pool Ché (`XxZoroxX10`) y Armando Chim Dominguez (`BrokeniGS`)  
 **Dominio:** Tablero → Tarea, adaptado a reportes ciudadanos (pendiente de confirmar con el docente)  
 **Repositorio:** https://github.com/XxZoroxX10/Proyecto-Integrador_ReporteCiudadano_DesarrolloWeb  
 **Docente:** MCC. Iván Márquez Larios (`ijmarquezl`)

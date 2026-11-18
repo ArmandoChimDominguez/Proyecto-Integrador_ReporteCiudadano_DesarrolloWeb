@@ -1,7 +1,7 @@
 # Propuesta del Proyecto Integrador
 
 **Curso:** Desarrollo de Aplicaciones Web (DAB-2201)  
-**Equipo:** Pedro Pablo Pool Ché y `BrokeniGS` (L23531079)  
+**Equipo:** Pedro Pablo Pool Ché y Armando Chim Dominguez (`BrokeniGS`)  
 **Dominio elegido:** Tablero → Tarea, adaptado a reportes ciudadanos  
 **Repositorio:** https://github.com/XxZoroxX10/Proyecto-Integrador_ReporteCiudadano_DesarrolloWeb  
 **Fecha:** 18/11/2026
@@ -106,7 +106,7 @@ En las colonias, los reportes de baches, alumbrado y basura se pierden en llamad
 | Integrante | Rol principal |
 | :--- | :--- |
 | Pedro Pablo Pool Ché | Backend, pruebas y documentación |
-| `BrokeniGS` | Frontend e integración |
+| Armando Chim Dominguez | Frontend e integración |
 
 - [ ] Ambos leyeron la guía oficial.
 - [ ] Ambos aceptan el alcance y las reglas.
@@ -120,4 +120,4 @@ En las colonias, los reportes de baches, alumbrado y basura se pierden en llamad
 - [x] Usa el stack permitido.
 - [x] No copia el dominio ni el código de los laboratorios.
 
-**Firmas:** Pedro Pablo Pool Ché · `BrokeniGS`
+**Firmas:** Pedro Pablo Pool Ché · Armando Chim Dominguez

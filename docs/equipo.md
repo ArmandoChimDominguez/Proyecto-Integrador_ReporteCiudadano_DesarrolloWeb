@@ -13,7 +13,7 @@
 | Integrante | Rol principal | Rol secundario | GitHub |
 | :--- | :--- | :--- | :--- |
 | Pedro Pablo Pool Ché | Backend y datos | Pruebas / documentación | `XxZoroxX10` |
-| `BrokeniGS` (L23531079) | Frontend y calidad | Backend / integración | `BrokeniGS` |
+| Armando Chim Dominguez (`BrokeniGS`) | Frontend y calidad | Backend / integración | `BrokeniGS` |
 
 Ambos deben poder explicar todo el proyecto.
 
@@ -39,7 +39,7 @@ Ambos deben poder explicar todo el proyecto.
 
 ## 5. Reparto de trabajo por hito
 
-| Hito | Pedro | BrokeniGS |
+| Hito | Pedro | Armando |
 | :--- | :--- | :--- |
 | 1. Mock API | Correcciones al contrato, 8 pruebas, documentación | API inicial e interfaz |
 | 2. Auth y capas | Por definir | Por definir |
@@ -52,4 +52,4 @@ Ambos deben poder explicar todo el proyecto.
 - [ ] Conocemos las fechas de los hitos y checkpoints.
 - [ ] Aceptamos la política de IA y autoría.
 
-**Firmas:** Pedro Pablo Pool Ché · `BrokeniGS`
+**Firmas:** Pedro Pablo Pool Ché · Armando Chim Dominguez

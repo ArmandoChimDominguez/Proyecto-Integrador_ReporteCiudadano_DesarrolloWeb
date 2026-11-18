@@ -1,6 +1,6 @@
 # Decisiones del proyecto
 
-**Equipo:** Pedro Pablo Pool Ché y `BrokeniGS`  
+**Equipo:** Pedro Pablo Pool Ché y Armando Chim Dominguez  
 **Dominio:** Tablero → Tarea, adaptado a reportes ciudadanos
 
 > Una página por hito: el registro de las decisiones que explican **por qué** el proyecto es como es.

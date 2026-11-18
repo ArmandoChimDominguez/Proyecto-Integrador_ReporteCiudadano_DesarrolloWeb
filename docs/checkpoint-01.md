@@ -1,6 +1,6 @@
 # Checkpoint del Proyecto Integrador
 
-**Equipo:** Pedro Pablo Pool Ché y `BrokeniGS` (L23531079)  
+**Equipo:** Pedro Pablo Pool Ché y Armando Chim Dominguez (`BrokeniGS`)  
 **Dominio:** Tablero → Tarea, adaptado a reportes ciudadanos  
 **Checkpoint:** 01  
 **Hito en curso:** 1 (cierre) → 2  
@@ -70,4 +70,4 @@ tests/test_api.py::test_verbo_no_permitido PASSED                        [100%]
 - [ ] El siguiente paso tiene responsable y fecha.
 - [x] El repositorio está actualizado y el commit es accesible.
 
-**Firmas:** Pedro Pablo Pool Ché · `BrokeniGS`
+**Firmas:** Pedro Pablo Pool Ché · Armando Chim Dominguez

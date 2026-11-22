@@ -23,7 +23,8 @@ Los vecinos reportan problemas de su colonia (baches, alumbrado, basura) y les d
 ## 3. Stack
 
 - Backend: FastAPI + Pydantic v2
-- Base de datos: en memoria (Hito 1); SQLite desde el Hito 3
+- Seguridad: bcrypt (hash de contraseñas) + PyJWT (HS256)
+- Base de datos: en memoria (Hitos 1 y 2); SQLite desde el Hito 3
 - ORM / migraciones: SQLAlchemy + Alembic (Hito 3)
 - Frontend: HTML, CSS y JavaScript vanilla
 - Pruebas: pytest + TestClient (httpx)
@@ -34,10 +35,32 @@ Los vecinos reportan problemas de su colonia (baches, alumbrado, basura) y les d
 python -m venv .venv
 source .venv/bin/activate       # En Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+export JWT_SECRET_KEY="una-clave-larga-y-aleatoria"   # opcional en desarrollo
+export ADMIN_PASSWORD="elige-una-contraseña"           # crea el usuario admin al arrancar
 uvicorn src.main:app --reload --port 8000
 ```
 
 Abre `http://127.0.0.1:8000/docs`.
+
+| Variable | Para qué | Si no se define |
+| :--- | :--- | :--- |
+| `JWT_SECRET_KEY` | Firma de los tokens | Se genera una aleatoria al arrancar (los tokens dejan de servir al reiniciar) |
+| `JWT_EXPIRA_MINUTOS` | Vigencia del token | 30 |
+| `ADMIN_USUARIO` / `ADMIN_PASSWORD` | Administrador inicial | No se crea ningún admin |
+| `BCRYPT_COSTO` | Costo de bcrypt | 12 |
+
+### Estructura
+
+```text
+src/
+├── main.py          # arma la app: routers, manejadores de error y admin inicial
+├── core/            # config, seguridad (bcrypt + JWT) y dependencias (Depends)
+├── models/          # entidades internas: Usuario, Tablero, Tarea
+├── schemas/         # DTOs de entrada y salida (Pydantic)
+├── repositories/    # acceso a datos (en memoria; no importa FastAPI)
+├── services/        # reglas de negocio y de propiedad
+└── routers/         # rutas HTTP: auth, reportes y páginas HTML
+```
 
 ### Pruebas
 
@@ -45,29 +68,36 @@ Abre `http://127.0.0.1:8000/docs`.
 pytest -q
 ```
 
-Resultado actual: **8 passed**.
+Resultado actual: **18 passed** (8 del contrato del Hito 1 + las 10 del Hito 2).
 
-## 5. Endpoints (Hito 1, usuario fijo `usuario_id = 1`)
+## 5. Endpoints (Hito 2)
 
-| Método | Ruta | Qué hace | Respuesta |
+| Método | Ruta | Acceso | Respuesta |
 | :--- | :--- | :--- | :--- |
-| GET | `/health` | Estado del servicio | 200 `{"status":"ok"}` |
-| GET | `/api/tableros` | Lista los tableros del usuario | 200 `{"tableros":[...]}` |
-| POST | `/api/tableros` | Crea un tablero | 201 con `id` / 422 |
-| GET | `/api/tableros/{id}/tareas` | Lista los reportes del tablero | 200 `{"tareas":[...]}` / 404 |
-| POST | `/api/tableros/{id}/tareas` | Crea un reporte | 201 / 404 / 422 |
-| GET | `/api/tareas/{id}` | Consulta un reporte | 200 / 404 |
-| DELETE | `/api/tareas/{id}` | Elimina un reporte | 204 / 404 |
+| GET | `/health` | Público | 200 `{"status":"ok"}` |
+| POST | `/api/registro` | Público | 201 `{"id","usuario","rol":"user"}` / 409 / 422 |
+| POST | `/api/token` | Público | 200 `{"access_token","token_type","expires_in"}` / 401 |
+| GET | `/api/perfil` | Con token | 200 / 401 |
+| GET | `/api/tableros` | Con token | 200 `{"tableros":[...]}`: un `user` ve los suyos; un `admin`, todos |
+| POST | `/api/tableros` | Con token | 201 (el dueño es quien lo crea) / 422 |
+| GET | `/api/tableros/{id}/tareas` | Dueño o admin | 200 `{"tareas":[...]}` / 403 / 404 |
+| POST | `/api/tableros/{id}/tareas` | Dueño o admin | 201 / 403 / 404 / 422 |
+| GET | `/api/tareas/{id}` | Dueño o admin | 200 / 403 / 404 |
+| DELETE | `/api/tareas/{id}` | Dueño o admin | 204 / 403 / 404 |
 
-Errores con sobre uniforme: `{"error": {"codigo": "...", "mensaje": "..."}}`.
+Sin token o con token inválido → **401** con `WWW-Authenticate: Bearer`; con token pero sin permiso → **403**.  
+Errores con sobre uniforme: `{"error": {"codigo": "...", "mensaje": "..."}}` (`NO_AUTENTICADO`, `SIN_PERMISO`, `RECURSO_NO_ENCONTRADO`, `METODO_NO_PERMITIDO`, `CONFLICTO`, `DATOS_INVALIDOS`).
 
 Ejemplo:
 
 ```bash
-curl -X POST http://127.0.0.1:8000/api/tableros/1/tareas \
-  -H "Content-Type: application/json" \
-  -d '{"titulo":"Bache en avenida principal","descripcion":"Bache profundo frente al parque","categoria":"baches","ubicacion":"Av. Rojo Gómez esq. calle 5"}'
-# 201 {"id":1,"tablero_id":1,...,"estado":"pendiente"}
+curl -X POST http://127.0.0.1:8000/api/registro -H "Content-Type: application/json" \
+  -d '{"usuario":"ana","password":"secreta123"}'
+TOKEN=$(curl -s -X POST http://127.0.0.1:8000/api/token -H "Content-Type: application/json" \
+  -d '{"usuario":"ana","password":"secreta123"}' | python -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
+curl -X POST http://127.0.0.1:8000/api/tableros -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" -d '{"nombre":"Colonia Centro"}'
+# 201 {"id":1,"nombre":"Colonia Centro","descripcion":null,"usuario_id":1}
 ```
 
 ## 6. Hitos y etiquetas
@@ -75,7 +105,7 @@ curl -X POST http://127.0.0.1:8000/api/tableros/1/tareas \
 | Hito | Sesión | Tag | Estado |
 | :--- | :---: | :--- | :--- |
 | 1. Contrato y mock | 10 | `v0.1-hito1` | [x] Código y 8 pruebas |
-| 2. Capas y seguridad | 20 | `v0.2-hito2` | [ ] |
+| 2. Capas y seguridad | 20 | `v0.2-hito2` | [x] Capas, JWT, roles y 10 pruebas |
 | 3. Persistencia y OWASP | 30 | `v0.3-hito3` | [ ] |
 | 4. Producto | 40 | `v1.0-final` | [ ] |
 

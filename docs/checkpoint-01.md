@@ -3,7 +3,7 @@
 **Equipo:** Pedro Pablo Pool Ché y Armando Chim Dominguez (`BrokeniGS`)  
 **Dominio:** Tablero → Tarea, adaptado a reportes ciudadanos  
 **Checkpoint:** 01  
-**Hito en curso:** 1 (cierre) → 2  
+**Hito en curso:** 1 (cierre) → H2  
 **Fecha:** 18/11/2026  
 **Repositorio:** https://github.com/XxZoroxX10/Proyecto-Integrador_ReporteCiudadano_DesarrolloWeb
 

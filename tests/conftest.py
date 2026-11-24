@@ -1,4 +1,4 @@
-"""Configuración común de las pruebas.
+"""Configuración común de las pruebas
 
 Cada prueba recibe repositorios NUEVOS gracias a app.dependency_overrides:
 así se demuestra que la inyección de dependencias permite sustituir la capa de

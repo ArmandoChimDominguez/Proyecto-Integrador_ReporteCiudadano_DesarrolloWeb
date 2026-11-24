@@ -1,4 +1,4 @@
-"""Pruebas del contrato del Hito 1, ahora con autenticación (Hito 2).
+"""Pruebas del contrato del Hito 1, ahora con autenticación (Hito 2)
 
 Ejecutar desde la raíz del repositorio:
 

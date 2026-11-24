@@ -1,4 +1,4 @@
-"""Las diez pruebas del Hito 2: registro, login, 401/403 y roles."""
+"""Las diez pruebas del Hito 2: registro, login, 401/403 y roles"""
 from tests.conftest import ADMIN, token_de
 
 TABLERO = {"nombre": "Colonia Centro"}

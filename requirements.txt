@@ -1,6 +1,8 @@
 fastapi
 uvicorn[standard]
 pydantic
+jinja2
+bcrypt
+PyJWT
 pytest
 httpx
-jinja2

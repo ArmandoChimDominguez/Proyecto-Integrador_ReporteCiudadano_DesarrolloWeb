@@ -1,328 +1,94 @@
+"""Sistema de Reporte Ciudadano · punto de entrada.
 
-from pathlib import Path
-from typing import Literal
-
-from fastapi import FastAPI, HTTPException, status, Request
+Aquí solo se arma la aplicación: routers, manejadores de error y el admin inicial.
+Capas:  routers (HTTP)  ->  services (reglas)  ->  repositories (datos)
+"""
+from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
-from fastapi.templating import Jinja2Templates
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from pydantic import BaseModel, Field
 
-
-# ==========================================
-# CONFIGURACION DE LA APLICACION
-# ==========================================
+from src.core import config, security
+from src.core.dependencies import get_repo_usuarios
+from src.routers import auth, paginas, reportes
+from src.services.errores import Conflicto, CredencialesInvalidas, ErrorDominio, NoEncontrado, SinPermiso
 
 app = FastAPI(
     title="Sistema de Reporte Ciudadano",
     version="0.2.0",
-    description="API para organizar y dar seguimiento a reportes ciudadanos."
-)
-
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-templates = Jinja2Templates(
-    directory=str(BASE_DIR / "templates")
+    description="API para organizar y dar seguimiento a reportes ciudadanos.",
 )
 
 
 # ==========================================
-# MODELOS DTO: TABLEROS
+# SOBRE DE ERROR UNIFORME
 # ==========================================
 
-class TableroCreate(BaseModel):
-    nombre: str = Field(min_length=3, max_length=60)
-    descripcion: str | None = Field(default=None, max_length=250)
+CODIGOS = {
+    401: "NO_AUTENTICADO",
+    403: "SIN_PERMISO",
+    404: "RECURSO_NO_ENCONTRADO",
+    405: "METODO_NO_PERMITIDO",
+    409: "CONFLICTO",
+}
 
 
-class TableroResponse(BaseModel):
-    id: int
-    nombre: str
-    descripcion: str | None
-    usuario_id: int
+def sobre_error(estado: int, mensaje: str, headers: dict | None = None) -> JSONResponse:
+    return JSONResponse(
+        status_code=estado,
+        headers=headers,
+        content={"error": {"codigo": CODIGOS.get(estado, "ERROR_HTTP"), "mensaje": mensaje}},
+    )
 
-
-# ==========================================
-# MODELOS DTO: TAREAS
-# ==========================================
-
-class TareaCreate(BaseModel):
-    titulo: str = Field(min_length=5, max_length=100)
-    descripcion: str = Field(min_length=10, max_length=500)
-    categoria: Literal["baches", "alumbrado", "basura"]
-    ubicacion: str = Field(min_length=5, max_length=150)
-    estado: Literal["pendiente", "en_progreso", "resuelta"] = "pendiente"
-
-
-class TareaResponse(BaseModel):
-    id: int
-    tablero_id: int
-    titulo: str
-    descripcion: str
-    categoria: str
-    ubicacion: str
-    estado: str
-
-
-# ==========================================
-# ALMACENAMIENTO TEMPORAL
-# ==========================================
-
-tableros = {}
-tareas = {}
-
-contador_tableros = 1
-contador_tareas = 1
-
-USUARIO_ID = 1
-
-
-# ==========================================
-# MANEJO DE ERRORES
-# ==========================================
 
 @app.exception_handler(StarletteHTTPException)
 async def manejar_error_http(request, exc):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={
-            "error": {
-                "codigo": (
-                    "RECURSO_NO_ENCONTRADO"
-                    if exc.status_code == 404
-                    else "ERROR_HTTP"
-                ),
-                "mensaje": str(exc.detail)
-            }
-        }
-    )
+    # Se conservan los encabezados ("Allow" en un 405, "WWW-Authenticate" en un 401)
+    return sobre_error(exc.status_code, str(exc.detail), getattr(exc, "headers", None))
 
 
 @app.exception_handler(RequestValidationError)
 async def manejar_error_validacion(request, exc):
     return JSONResponse(
         status_code=422,
-        content={
-            "error": {
-                "codigo": "DATOS_INVALIDOS",
-                "mensaje": "Los datos enviados no cumplen con las validaciones."
-            }
-        }
+        content={"error": {"codigo": "DATOS_INVALIDOS",
+                           "mensaje": "Los datos enviados no cumplen con las validaciones."}},
     )
+
+
+@app.exception_handler(ErrorDominio)
+async def manejar_error_dominio(request, exc: ErrorDominio):
+    """Traduce los errores de los servicios (que no conocen HTTP) a códigos HTTP."""
+    if isinstance(exc, CredencialesInvalidas):
+        return sobre_error(401, exc.mensaje, {"WWW-Authenticate": "Bearer"})
+    estado = {NoEncontrado: 404, SinPermiso: 403, Conflicto: 409}.get(type(exc), 400)
+    return sobre_error(estado, exc.mensaje)
 
 
 # ==========================================
-# RUTAS DEL SITIO CIUDADANO
+# RUTAS
 # ==========================================
 
-@app.get("/", include_in_schema=False)
-async def inicio(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="SITIO/index.html",
-        context={}
-    )
+app.include_router(auth.router)
+app.include_router(reportes.router)
+app.include_router(paginas.router)
 
 
-@app.get("/reportar", include_in_schema=False)
-async def pagina_reportar(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="SITIO/reportar.html",
-        context={}
-    )
-
-
-@app.get("/mis-reportes", include_in_schema=False)
-async def mis_reportes(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="SITIO/mis_reportes.html",
-        context={}
-    )
-
-
-@app.get("/detalle-reporte", include_in_schema=False)
-async def detalle_reporte(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="SITIO/detalle_reporte.html",
-        context={}
-    )
-
-
-@app.get("/contacto", include_in_schema=False)
-async def contacto(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="SITIO/contacto.html",
-        context={}
-    )
-
-
-# ==========================================
-# RUTAS DEL PANEL ADMINISTRATIVO
-# ==========================================
-
-@app.get("/admin", include_in_schema=False)
-async def login_admin(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="ADMIN/login.html",
-        context={}
-    )
-
-
-@app.get("/admin/dashboard", include_in_schema=False)
-async def dashboard(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="ADMIN/dashboard.html",
-        context={}
-    )
-
-
-@app.get("/admin/reportes", include_in_schema=False)
-async def administrar_reportes(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="ADMIN/reportes.html",
-        context={}
-    )
-
-
-@app.get("/admin/reporte-nuevo", include_in_schema=False)
-async def nuevo_reporte(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="ADMIN/reporte_nuevo.html",
-        context={}
-    )
-
-
-@app.get("/admin/reporte-editar", include_in_schema=False)
-async def editar_reporte(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="ADMIN/reporte_editar.html",
-        context={}
-    )
-
-
-# ==========================================
-# ENDPOINT: VERIFICAR SERVIDOR
-# ==========================================
-
-@app.get("/health")
+@app.get("/health", tags=["sistema"])
 def health():
     return {"status": "ok"}
 
 
 # ==========================================
-# ENDPOINTS: TABLEROS
+# ADMINISTRADOR INICIAL (solo si se configura en el entorno)
 # ==========================================
 
-@app.post(
-    "/api/tableros",
-    response_model=TableroResponse,
-    status_code=status.HTTP_201_CREATED
-)
-def crear_tablero(datos: TableroCreate):
-
-    global contador_tableros
-
-    nuevo_tablero = {
-        "id": contador_tableros,
-        "nombre": datos.nombre,
-        "descripcion": datos.descripcion,
-        "usuario_id": USUARIO_ID
-    }
-
-    tableros[contador_tableros] = nuevo_tablero
-    contador_tableros += 1
-
-    return nuevo_tablero
+def crear_admin_inicial() -> None:
+    if not config.ADMIN_PASSWORD:
+        return
+    repo = get_repo_usuarios()
+    if repo.por_nombre(config.ADMIN_USUARIO) is None:
+        repo.agregar(config.ADMIN_USUARIO, security.hashear_password(config.ADMIN_PASSWORD), rol="admin")
 
 
-@app.get("/api/tableros")
-def listar_tableros():
-    return list(tableros.values())
-
-
-# ==========================================
-# ENDPOINTS: TAREAS
-# ==========================================
-
-@app.post(
-    "/api/tableros/{tablero_id}/tareas",
-    response_model=TareaResponse,
-    status_code=status.HTTP_201_CREATED
-)
-def crear_tarea(tablero_id: int, datos: TareaCreate):
-
-    global contador_tareas
-
-    if tablero_id not in tableros:
-        raise HTTPException(
-            status_code=404,
-            detail="El tablero solicitado no existe."
-        )
-
-    nueva_tarea = {
-        "id": contador_tareas,
-        "tablero_id": tablero_id,
-        "titulo": datos.titulo,
-        "descripcion": datos.descripcion,
-        "categoria": datos.categoria,
-        "ubicacion": datos.ubicacion,
-        "estado": datos.estado
-    }
-
-    tareas[contador_tareas] = nueva_tarea
-    contador_tareas += 1
-
-    return nueva_tarea
-
-
-@app.get("/api/tableros/{tablero_id}/tareas")
-def listar_tareas(tablero_id: int):
-
-    if tablero_id not in tableros:
-        raise HTTPException(
-            status_code=404,
-            detail="El tablero solicitado no existe."
-        )
-
-    return [
-        tarea for tarea in tareas.values()
-        if tarea["tablero_id"] == tablero_id
-    ]
-
-
-@app.get("/api/tareas/{tarea_id}", response_model=TareaResponse)
-def consultar_tarea(tarea_id: int):
-
-    if tarea_id not in tareas:
-        raise HTTPException(
-            status_code=404,
-            detail="La tarea solicitada no existe."
-        )
-
-    return tareas[tarea_id]
-
-
-@app.delete("/api/tareas/{tarea_id}")
-def eliminar_tarea(tarea_id: int):
-
-    if tarea_id not in tareas:
-        raise HTTPException(
-            status_code=404,
-            detail="La tarea solicitada no existe."
-        )
-
-    del tareas[tarea_id]
-
-    return {
-        "mensaje": "Tarea eliminada correctamente."
-    }
+crear_admin_inicial()

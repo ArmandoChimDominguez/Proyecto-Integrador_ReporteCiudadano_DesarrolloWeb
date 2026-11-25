@@ -1,7 +1,7 @@
 """Repositorios en memoria. No importan FastAPI: solo guardan y buscan entidades.
 
 En el Hito 3 se reemplazan por repositorios con SQLAlchemy que tengan los mismos
-métodos; los servicios y routers no tendrán que cambiar.
+métodos; los servicios y routers no tendrán que cambia.
 """
 from dataclasses import replace
 

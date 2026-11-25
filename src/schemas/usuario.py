@@ -1,4 +1,4 @@
-"""DTOs de autenticación. La contraseña solo existe en la entrada."""
+"""DTOs de autenticación. La contraseña solo existe en las entradas."""
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
